@@ -1,66 +1,62 @@
 node('built-in') 
 {
-   stage('ContinuousDownload')
-   {
-       try
-       {
-          git 'https://github.com/intelliqittrainings/maven.git'
-       }
-       catch(Exception e1)
-       {
-           mail bcc: '', body: 'Jenkins is unable to download from the remote github', cc: '', from: '', replyTo: '', subject: 'Download Failed', to: 'git.admin@gmail.com'
+    stage('continuousDwonload') 
+    {
+        try
+        {
+              git 'https://github.com/intelliqittrainings/maven.git'
+        }
+        catch(Exception e1)
+        {
+            mail bcc: '', body: 'this step not run to jenkins', cc: '', from: '', replyTo: '', subject: 'faild to download', to: 'down@gmail.com'
             exit(1)
-       }
-   }
-   stage('ContinuousBuild')
-   {
-       try
-       {
-           sh 'mvn package'
-       }
-       catch(Exception e2)
-       {
-           mail bcc: '', body: 'Jenkins is unable to create an artifact from the downloaded code', cc: '', from: '', replyTo: '', subject: 'Build Failed', to: 'dev.team@gmail.com'
-           exit(1)
-       }
-   }
-   stage('ContinuousDeployment')
-   {
-       try
-       {
-          deploy adapters: [tomcat9(credentialsId: '376e01e8-e628-40d2-aaec-6452f707a3ff', path: '', url: 'http://172.31.20.211:8080')], contextPath: 'testapp', war: '**/*.war'
-       }
-       catch(Exception e3)
-       {
-            mail bcc: '', body: 'Jenkins is unable to deploy into tomcat on the QAservers', cc: '', from: '', replyTo: '', subject: 'Deployment Failed', to: 'middleware.team@gmail.com'
-            exit(1)
-       }
-   }
-   stage('ContinuousTesting')
-   {
-       try
-       {
-          git 'https://github.com/intelliqittrainings/FunctionalTesting.git'
-          sh 'java -jar /home/ubuntu/.jenkins/workspace/ScriptedPipeline2/testing.jar'
-       }
-       catch(Exception e4)
-       {
-           mail bcc: '', body: 'Selenium scripts are showing a failure status', cc: '', from: '', replyTo: '', subject: 'Testing Failed', to: 'qa.team@gmail.com'
-           exit(1)
-       }
-   }
-   stage('ContinuousDelivery')
-   {
-       try
-       {
-          input message: 'Need approval from the DM!', submitter: 'srinivas'
-          deploy adapters: [tomcat9(credentialsId: '376e01e8-e628-40d2-aaec-6452f707a3ff', path: '', url: 'http://172.31.21.226:8080')], contextPath: 'prodapp', war: '**/*.war'
-       }
-       catch(Exception e5)
-       {
-           mail bcc: '', body: 'Jenkins is unable to deploy into tomcat on the prodservers', cc: '', from: '', replyTo: '', subject: 'Delivery Failed', to: 'delivery.team@gmail.com'   
-       }
-   }
-   
+        }
 }
-         
+ stage('continuousBuild') 
+    {
+        try
+        {
+            sh 'mvn package'
+        }
+        catch(Exception e2)
+        {
+            mail bcc: '', body: 'this step not run to jenkins', cc: '', from: '', replyTo: '', subject: 'faild to build', to: 'down@gmail.com'
+            exit(1)
+        }
+}
+stage('continuousDeployment') 
+    {
+        try
+        {
+          deploy adapters: [tomcat9(credentialsId: '0038fb52-bf8d-4e86-ac1d-883fd4bfab41', path: '', url: 'http://172.31.11.172:8080')], contextPath: 'testapp', war: '**/*.war'
+        }
+        catch(Exception e3)
+        {
+            mail bcc: '', body: 'this step not run to jenkins', cc: '', from: '', replyTo: '', subject: 'faild to deploy', to: 'down@gmail.com'
+             exit(1)
+        }
+}
+stage('continuousTesting') 
+    {
+        try
+        {
+             git 'https://github.com/intelliqittrainings/FunctionalTesting.git'
+        }
+        catch(Exception e4)
+        {
+            mail bcc: '', body: 'this step not run to jenkins', cc: '', from: '', replyTo: '', subject: 'faild to testing', to: 'down@gmail.com'
+            exit(1)
+        }
+}
+stage('continuousDelivery') 
+    {
+        try
+        {
+             deploy adapters: [tomcat9(credentialsId: '0038fb52-bf8d-4e86-ac1d-883fd4bfab41', path: '', url: 'http://172.31.0.222:8080')], contextPath: 'prodapp', war: '**/*.war'
+        }
+        catch(Exception e5)
+        {
+            mail bcc: '', body: 'this step not run to jenkins', cc: '', from: '', replyTo: '', subject: 'faild to delivery', to: 'down@gmail.com'
+        }
+}
+}
